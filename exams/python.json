@@ -1,0 +1,38 @@
+{
+  "name": "Introducción a Python",
+  "description": "Examen básico sobre conceptos fundamentales de Python",
+  "questions": [
+    {
+      "question": "¿Python es un lenguaje de programación interpretado?",
+      "type": "yes_no",
+      "explanation": "Sí, Python se ejecuta línea por línea mediante un intérprete."
+    },
+    {
+      "question": "¿Cuál es la forma correcta de crear una lista en Python?",
+      "type": "single_choice",
+      "options": [
+        {"text": "lista = [1, 2, 3]", "correct": true},
+        {"text": "lista = (1, 2, 3)", "correct": false},
+        {"text": "lista = {1, 2, 3}", "correct": false}
+      ],
+      "explanation": "Los corchetes [] se usan para listas."
+    },
+    {
+      "question": "¿Cuáles de estos son tipos de datos en Python? (selecciona todos los correctos)",
+      "type": "multiple_choice",
+      "options": [
+        {"text": "int", "correct": true},
+        {"text": "string", "correct": false},
+        {"text": "str", "correct": true},
+        {"text": "list", "correct": true}
+      ],
+      "explanation": "Los tipos básicos incluyen int, str, list, dict, etc. 'string' no es un tipo en Python."
+    },
+    {
+      "question": "¿Qué hace la función print()?",
+      "type": "free_text",
+      "correct_answer": "muestra texto en la pantalla",
+      "explanation": "print() muestra texto en la pantalla."
+    }
+  ]
+}
