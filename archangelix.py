@@ -19,13 +19,13 @@ def show_summary(result_data):
     print("-" * 100)
 
     for r in result_data['results']:
-        answer_str = str(r['user_answer'])
-        correct_str = '✓' if r['correct'] else (
+        answer = str(r['user_answer'])
+        correctness = '✓' if r['correct'] else (
             '✗' if r['correct'] is not None else 'N/A')
-        question_text = r['question'][:47] + \
+        question = r['question'][:47] + \
             '...' if len(r['question']) > 50 else r['question']
         print(
-            f"{question_text:<50} {r['type']:<18} {answer_str:<15} {correct_str}")
+            f"{question:<50} {r['type']:<18} {answer:<15} {correctness}")
 
 
 def cmd_show_exams():
@@ -35,28 +35,28 @@ def cmd_show_exams():
         print("No exams directory found")
         return
 
-    exam_files = [f for f in os.listdir(EXAMS_DIR) if f.endswith('.json')]
+    exams = [f for f in os.listdir(EXAMS_DIR) if f.endswith('.json')]
 
-    if not exam_files:
+    if not exams:
         print("No exams found")
         return
 
     print("Available exams:")
-    for i, filename in enumerate(exam_files, 1):
-        print(f"{i}. {filename}")
+    for exam_index, filename in enumerate(exams, 1):
+        print(f"{exam_index}. {filename}")
 
     choice = input("\nSelect exam number: ").strip()
 
     try:
-        idx = int(choice) - 1
-        if idx < 0 or idx >= len(exam_files):
+        selected_index = int(choice) - 1
+        if selected_index < 0 or selected_index >= len(exams):
             print("Invalid selection")
             return
     except ValueError:
         print("Invalid input")
         return
 
-    exam_path = os.path.join(EXAMS_DIR, exam_files[idx])
+    exam_path = os.path.join(EXAMS_DIR, exams[selected_index])
 
     with open(exam_path, 'r', encoding='utf-8') as f:
         exam = json.load(f)
@@ -68,8 +68,8 @@ def cmd_show_exams():
 
     results = []
 
-    for q_num, question in enumerate(exam['questions'], 1):
-        print(f"\nQuestion {q_num}/{len(exam['questions'])}:")
+    for question_index, question in enumerate(exam['questions'], 1):
+        print(f"\nQuestion {question_index}/{len(exam['questions'])}:")
         print(question['question'])
 
         if question['type'] == 'yes_no':
@@ -85,8 +85,8 @@ def cmd_show_exams():
             })
 
         elif question['type'] == 'single_choice':
-            for i, opt in enumerate(question['options']):
-                print(f"  {i}. {opt['text']}")
+            for option_index, option in enumerate(question['options']):
+                print(f"  {option_index}. {option['text']}")
             user_input = input("Select option number: ").strip()
             try:
                 user_answer = int(user_input)
@@ -105,14 +105,14 @@ def cmd_show_exams():
             })
 
         elif question['type'] == 'multiple_choice':
-            for i, opt in enumerate(question['options']):
-                print(f"  {i}. {opt['text']}")
+            for exam_index, option in enumerate(question['options']):
+                print(f"  {exam_index}. {option['text']}")
             user_input = input(
                 "Select option numbers (comma-separated): ").strip()
             try:
                 user_answer = [int(x.strip()) for x in user_input.split(',')]
-                correct_answers = [i for i, opt in enumerate(
-                    question['options']) if opt['correct']]
+                correct_answers = [option_index for option_index, option in enumerate(
+                    question['options']) if option['correct']]
                 correct = sorted(user_answer) == sorted(correct_answers)
             except (ValueError, IndexError):
                 user_answer = []
