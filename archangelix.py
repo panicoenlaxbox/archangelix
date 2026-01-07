@@ -10,7 +10,7 @@ RESULTS_DIR = "results"
 
 def show_summary(result_data):
     """Display exam result summary."""
-    
+
     print(f"\n{'='*60}")
     print(f"Exam completed: {result_data['exam_name']}")
     print(f"Score: {result_data['score']:.1f}/10")
@@ -45,10 +45,10 @@ def cmd_show_exams():
     for exam_index, filename in enumerate(exams, 1):
         print(f"{exam_index}. {filename}")
 
-    choice = input("\nSelect exam number: ").strip()
+    selected_index = input("\nSelect exam number: ").strip()
 
     try:
-        selected_index = int(choice) - 1
+        selected_index = int(selected_index)-1
         if selected_index < 0 or selected_index >= len(exams):
             print("Invalid selection")
             return
@@ -74,68 +74,74 @@ def cmd_show_exams():
 
         if question['type'] == 'yes_no':
             user_input = input("Answer (yes/no): ").strip().lower()
-            user_answer = 'yes' if user_input in ['yes', 'y'] else 'no'
-            correct = user_answer == 'yes'
+            user_answer_list = 'yes' if user_input in ['yes', 'y'] else 'no'
+            correct = user_answer_list == 'yes'
             results.append({
                 'question': question['question'],
                 'type': question['type'],
-                'user_answer': user_answer,
+                'user_answer': user_answer_list,
                 'correct': correct,
                 'explanation': question['explanation']
             })
 
         elif question['type'] == 'single_choice':
-            for option_index, option in enumerate(question['options']):
+            for option_index, option in enumerate(question['options'], 1):
                 print(f"  {option_index}. {option['text']}")
             user_input = input("Select option number: ").strip()
             try:
-                user_answer = int(user_input)
-                correct = question['options'][user_answer]['correct']
+                user_answer_list = int(user_input)
+                if user_answer_list < 1 or user_answer_list >= len(question['options']) + 1:
+                    raise IndexError()
+                correct = question['options'][user_answer_list - 1]['correct']
             except (ValueError, IndexError):
-                user_answer = -1
+                user_answer_list = None
                 correct = False
 
             results.append({
                 'question': question['question'],
                 'type': question['type'],
                 'options': question['options'],
-                'user_answer': user_answer,
+                'user_answer': user_answer_list,
                 'correct': correct,
                 'explanation': question['explanation']
             })
 
         elif question['type'] == 'multiple_choice':
-            for exam_index, option in enumerate(question['options']):
-                print(f"  {exam_index}. {option['text']}")
+            for option_index, option in enumerate(question['options'], 1):
+                print(f"  {option_index}. {option['text']}")
             user_input = input(
                 "Select option numbers (comma-separated): ").strip()
             try:
-                user_answer = [int(x.strip()) for x in user_input.split(',')]
-                correct_answers = [option_index for option_index, option in enumerate(
-                    question['options']) if option['correct']]
-                correct = sorted(user_answer) == sorted(correct_answers)
+                user_answer_list = [int(x.strip())
+                                    for x in user_input.split(',') if x.strip()]
+                for user_answer in user_answer_list:
+                    if user_answer < 1 or user_answer >= len(question['options']) + 1:
+                        raise IndexError()
+                correct_answers = [i for i, option in enumerate(
+                    question['options'], 1) if option['correct']]
+                correct = sorted(user_answer_list) == sorted(correct_answers)
             except (ValueError, IndexError):
-                user_answer = []
+                user_answer_list = []
                 correct = False
 
             results.append({
                 'question': question['question'],
                 'type': question['type'],
                 'options': question['options'],
-                'user_answer': user_answer,
+                'user_answer': user_answer_list,
                 'correct': correct,
                 'explanation': question['explanation']
             })
 
         elif question['type'] == 'free_text':
-            user_answer = input("Your answer: ").strip()
+            user_answer_list = input("Your answer: ").strip()
             correct_answer = question.get('correct_answer', '').strip().lower()
-            user_answer_normalized = user_answer.lower()
+            user_answer_normalized = user_answer_list.lower()
             correct = correct_answer in user_answer_normalized if correct_answer else True
             results.append({
                 'question': question['question'],
                 'type': question['type'],
-                'user_answer': user_answer,
+                'user_answer': user_answer_list,
                 'correct': correct,
                 'explanation': question['explanation']
             })
