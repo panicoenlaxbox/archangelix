@@ -5,12 +5,12 @@ Simple console-based exam system.
 ## Usage
 
 ```bash
-python3 exam.py show_exams
+python3 archangelix.py show_exams
 ```
 List and run an interactive exam.
 
 ```bash
-python3 exam.py show_results
+python3 archangelix.py show_results
 ```
 Show saved exam results.
 
