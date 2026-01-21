@@ -5,6 +5,7 @@
     {
       "question": "¿Python es un lenguaje de programación interpretado?",
       "type": "yes_no",
+      "correct_answer": "yes",
       "explanation": "Sí, Python se ejecuta línea por línea mediante un intérprete."
     },
     {

@@ -74,12 +74,12 @@ def cmd_show_exams():
 
         if question['type'] == 'yes_no':
             user_input = input("Answer (yes/no): ").strip().lower()
-            user_answer_list = 'yes' if user_input in ['yes', 'y'] else 'no'
-            correct = user_answer_list == 'yes'
+            user_answer = 'yes' if user_input in ['yes', 'y'] else 'no'
+            correct = user_answer == question['correct_answer']
             results.append({
                 'question': question['question'],
                 'type': question['type'],
-                'user_answer': user_answer_list,
+                'user_answer': user_answer,
                 'correct': correct,
                 'explanation': question['explanation']
             })
@@ -89,19 +89,19 @@ def cmd_show_exams():
                 print(f"  {option_index}. {option['text']}")
             user_input = input("Select option number: ").strip()
             try:
-                user_answer_list = int(user_input)
-                if user_answer_list < 1 or user_answer_list >= len(question['options']) + 1:
+                user_answer = int(user_input)
+                if user_answer < 1 or user_answer >= len(question['options']) + 1:
                     raise IndexError()
-                correct = question['options'][user_answer_list - 1]['correct']
+                correct = question['options'][user_answer - 1]['correct']
             except (ValueError, IndexError):
-                user_answer_list = None
+                user_answer = None
                 correct = False
 
             results.append({
                 'question': question['question'],
                 'type': question['type'],
                 'options': question['options'],
-                'user_answer': user_answer_list,
+                'user_answer': user_answer,
                 'correct': correct,
                 'explanation': question['explanation']
             })
@@ -232,17 +232,23 @@ def show_help():
 
 
 def main():
+    # Necesitamos al menos 1 argumento adicional (el comando). Si no existe,
+    # mostramos la ayuda y terminamos para evitar errores al acceder a sys.argv[1].
     if len(sys.argv) < 2:
         show_help()
-        return
+        return  # Salida temprana: no hay comando que procesar
 
+    # Tomamos el primer argumento del usuario como comando.
     command = sys.argv[1].strip().lower()
 
     if command == "show_exams":
+        # Ejecuta el flujo de exámenes: lista, selecciona, corre el examen y guarda resultados.
         cmd_show_exams()
     elif command == "show_results":
+        # Muestra la lista de resultados guardados y permite ver un resumen.
         cmd_show_results()
     else:
+        # Comando no reconocido: informamos al usuario y mostramos la ayuda disponible.
         print(f"Unknown command: {command}")
         show_help()
 
